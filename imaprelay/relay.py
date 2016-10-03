@@ -88,12 +88,15 @@ class Relay(object):
         self._chk(self.imap.expunge())
 
     def loop(self, interval=30):
+        do_loop = True
         try:
-            while 1:
+            while do_loop:
                 r = self.relay()
                 t = interval if r else interval * 10
                 log.info("Sleeping for %d seconds", t)
                 time.sleep(t)
+                if not interval:
+                    do_loop = False
         except KeyboardInterrupt:
             log.warn("Caught interrupt, quitting!")
 
