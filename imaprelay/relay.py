@@ -19,10 +19,11 @@ class IMAPError(RelayError):
     pass
 
 class Relay(object):
-    def __init__(self, to, inbox, archive):
+    def __init__(self, to, inbox, archive, sender='peter@pdemarest.net'):
         self.to = to
         self.inbox = inbox
         self.archive = archive
+        self.sender = sender
 
     def relay(self):
         try:
@@ -72,7 +73,8 @@ class Relay(object):
         for response_part in msg_data:
             if isinstance(response_part, tuple):
                 eml = email.message_from_string(response_part[1])
-                res = self.smtp.sendmail(eml['from'], self.to, eml.as_string())
+                #res = self.smtp.sendmail(eml['from'], self.to, eml.as_string())
+                res = self.smtp.sendmail(self.sender, self.to, eml.as_string())
 
                 log.debug("Sent message '{subj}' from {from_} to {to}".format(from_=eml['from'],
                                                                               to=self.to,
